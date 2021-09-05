@@ -46,8 +46,8 @@ def lambda_handler(event, context):
             #Transforma Json String em Objeto Python com scapes
             jsonPut = json.loads(jsonAjustado)
             
-            #Transforma objeto com scapes em objeto Python correto
-            jsonPut = json.loads(jsonPut, parse_float=Decimal)
+            #Transforma objeto com scapes em objeto Python correto 
+            jsonPut = json.loads(jsonPut)
             
             
             table = dynamodb.Table("Desconto")

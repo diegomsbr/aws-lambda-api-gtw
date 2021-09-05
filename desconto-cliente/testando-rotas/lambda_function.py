@@ -25,7 +25,7 @@ def lambda_handler(event, context):
     # ========================================================
     # Verifica rota a ser executada
     # ========================================================
-    print(event)
+    print(json.dumps(event))
     
     if rota == "PUT /descontos":
 

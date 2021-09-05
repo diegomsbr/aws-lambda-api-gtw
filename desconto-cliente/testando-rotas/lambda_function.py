@@ -41,11 +41,11 @@ def lambda_handler(event, context):
 
     elif rota == "DELETE /descontos/{id}":
         
-        body = 'Teste GET por id' 
+        body = 'Teste DELETE por id' 
         
     elif rota == "PATCH /descontos/{id}":
         
-        body = 'Teste GET por id' 
+        body = 'Teste PATCH por id' 
         
     else:
         statusCode = 500

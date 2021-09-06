@@ -11,6 +11,9 @@ from uuid import UUID
 import decimal
 import time
 
+import dateutil.tz
+
+
 dynamodb = boto3.resource('dynamodb')
 
 def lambda_handler(event, context):
@@ -75,7 +78,10 @@ def lambda_handler(event, context):
         
         if 'queryStringParameters' in event and  event['queryStringParameters'] and 'Codigo_Pontuacao_Cliente' in event['queryStringParameters']:
     
-            data_e_hora_atuais = datetime.now()
+            # Como o Lambda é serveless, não sei qual maquina de qual pais está rodando, preciso garantir que a data e hora seja de SP, no meu caso.
+            timezoneSPBrazil = dateutil.tz.gettz('America/Sao_Paulo')
+           
+            data_e_hora_atuais =  datetime.now(tz=timezoneSPBrazil)
             data_e_hora_dia_ate_final = data_e_hora_atuais.strftime('%Y-%m-%d') 
             data_e_hora_dia_ate_final = data_e_hora_dia_ate_final + ':23:59:59'
             
@@ -92,7 +98,7 @@ def lambda_handler(event, context):
             # Altera encoder senao da erro para campos do tipo UUID, Decimal, Datetime, pois todos tem que virar string
             json.JSONEncoder.default = JSONEncoder_newdefault
             body = json.dumps(response)
-                
+
         else:
             statusCode = 400
             body = 'Está faltando o query parametrer codigo_pesquisa_codigo'                

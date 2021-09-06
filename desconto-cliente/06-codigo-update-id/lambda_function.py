@@ -161,8 +161,6 @@ def lambda_handler(event, context):
                                         ':desconto': jsonPatch['percentual_desconto']},
                                         ReturnValues="UPDATED_NEW")
 
-            print(response)
-            
             if 'Attributes' in response and response['Attributes']:
                 # Altera encoder senao da erro para campos do tipo UUID, Decimal, Datetime, pois todos tem que virar string
                 json.JSONEncoder.default = JSONEncoder_newdefault

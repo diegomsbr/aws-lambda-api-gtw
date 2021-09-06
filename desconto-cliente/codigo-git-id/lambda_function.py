@@ -101,7 +101,7 @@ def lambda_handler(event, context):
 
         else:
             statusCode = 400
-            body = 'Está faltando o query parametrer Codigo_Pontuacao_Cliente'                
+            body = 'Está faltando o query parametrer codigo_pesquisa_codigo'                
 
     elif rota == "GET /descontos/{id}":
         
@@ -110,9 +110,14 @@ def lambda_handler(event, context):
             table = dynamodb.Table("Desconto")
             response = table.get_item(Key={'CodigoDesconto': event['pathParameters']['id']})
             
-            # Altera encoder senao da erro para campos do tipo UUID, Decimal, Datetime, pois todos tem que virar string
-            json.JSONEncoder.default = JSONEncoder_newdefault
-            body = json.dumps(response)
+            if 'Item' in response and response['Item']:
+                # Altera encoder senao da erro para campos do tipo UUID, Decimal, Datetime, pois todos tem que virar string
+                json.JSONEncoder.default = JSONEncoder_newdefault
+                body = json.dumps(response)
+            else:
+                statusCode = 404
+                body = 'Nenhum registro encontrado'                
+
 
         else:
             statusCode = 400

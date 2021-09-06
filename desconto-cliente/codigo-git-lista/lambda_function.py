@@ -101,7 +101,7 @@ def lambda_handler(event, context):
 
         else:
             statusCode = 400
-            body = 'Está faltando o query parametrer codigo_pesquisa_codigo'                
+            body = 'Está faltando o query parametrer Codigo_Pontuacao_Cliente'                
 
     elif rota == "GET /descontos/{id}":
         

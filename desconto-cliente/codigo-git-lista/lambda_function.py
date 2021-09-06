@@ -77,7 +77,7 @@ def lambda_handler(event, context):
     
             data_e_hora_atuais = datetime.now()
             data_e_hora_dia_ate_final = data_e_hora_atuais.strftime('%Y/%m/%d') 
-            data_e_hora_dia_ate_final = data_e_hora_dia_ate_final + 'T23:59:59'
+            data_e_hora_dia_ate_final = data_e_hora_dia_ate_final + ':23:59:59'
             
             table = dynamodb.Table("Desconto")
             

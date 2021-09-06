@@ -129,7 +129,7 @@ def lambda_handler(event, context):
         }
 
 # =============================================================================
-# Altera o padrao encoder para evitrar erros de parse no Python
+# Altera o padrao encoder para evitar erros de parse no Python
 # =============================================================================
 def JSONEncoder_newdefault(self, o):
     if isinstance(o, UUID): return str(o)

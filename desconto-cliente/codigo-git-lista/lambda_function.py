@@ -90,10 +90,10 @@ def lambda_handler(event, context):
             response = table.query(
                             IndexName="Pontuacao-Inicio-index",
                             Select="SPECIFIC_ATTRIBUTES",
-                            ProjectionExpression="CodigoDesconto, DataFimDesconto, PercentualDesconto",
+                            ProjectionExpression="PercentualDesconto, DataFimDesconto, CodigoDesconto",
                             ConsistentRead=False,
                             ReturnConsumedCapacity="TOTAL",
-                            KeyConditionExpression=Key('PontuacaoDoCliente').eq(event['queryStringParameters']['Codigo_Pontuacao_Cliente']) & Key('DataInicioDesconto').lt(data_e_hora_dia_ate_final),)
+                            KeyConditionExpression=Key('PontuacaoDoCliente').eq(int(event['queryStringParameters']['Codigo_Pontuacao_Cliente'])) & Key('DataInicioDesconto').lt(data_e_hora_dia_ate_final),)
                             
             # Altera encoder senao da erro para campos do tipo UUID, Decimal, Datetime, pois todos tem que virar string
             json.JSONEncoder.default = JSONEncoder_newdefault

@@ -76,7 +76,7 @@ def lambda_handler(event, context):
         if 'queryStringParameters' in event and  event['queryStringParameters'] and 'Codigo_Pontuacao_Cliente' in event['queryStringParameters']:
     
             data_e_hora_atuais = datetime.now()
-            data_e_hora_dia_ate_final = data_e_hora_atuais.strftime('%Y/%m/%d') 
+            data_e_hora_dia_ate_final = data_e_hora_atuais.strftime('%Y-%m-%d') 
             data_e_hora_dia_ate_final = data_e_hora_dia_ate_final + ':23:59:59'
             
             table = dynamodb.Table("Desconto")

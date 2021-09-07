@@ -72,7 +72,7 @@ def lambda_handler(event, context):
             return {
                 'statusCode': statusCode,
                 'body': body
-            }   
+            }  
 
     elif rota == "GET /descontos":
         
@@ -118,7 +118,6 @@ def lambda_handler(event, context):
                 statusCode = 404
                 body = 'Nenhum registro encontrado'                
 
-
         else:
             statusCode = 400
             body = 'Está faltando o path parameter {id}'
@@ -137,7 +136,7 @@ def lambda_handler(event, context):
                 body = json.dumps(response)
             else:
                 statusCode = 404
-                body = 'Nenhum registro encontrado'                
+                body = 'Nenhum registro encontrado'                  
         
     elif rota == "PATCH /descontos/{id}":
         

@@ -15,14 +15,29 @@ import dateutil.tz
 
 
 dynamodb = boto3.resource('dynamodb')
+awsuuid = ""
 
 def lambda_handler(event, context):
 
     global dynamodb
+    global awsuuid
 
     body = ""
     statusCode = 200
 
+    # ========================================================
+    # Caso a função Lambda tenha sifo invocada pelo WarmUP
+    # ========================================================
+    if 'source' in event and event['source'] == 'warmup':
+        if awsuuid:
+            awsuuid = context['aws_request_id ']
+            
+        statusCode = 200
+        body = 'Warmup - aws_request_id ' + awsuuid
+        return {
+            'statusCode': statusCode,
+            'body': body
+        }  
     # ========================================================
     # Chamada via API Gateway com proxy para Lambda
     # ========================================================
@@ -101,7 +116,7 @@ def lambda_handler(event, context):
 
         else:
             statusCode = 400
-            body = 'Está faltando o query parametrer codigo_pesquisa_codigo'                 
+            body = 'Está faltando o query parametrer codigo_pesquisa_codigo'                
 
     elif rota == "GET /descontos/{id}":
         
@@ -124,11 +139,51 @@ def lambda_handler(event, context):
 
     elif rota == "DELETE /descontos/{id}":
         
-        body = 'Teste DELETE por id' 
+       if 'pathParameters' in event and event['pathParameters'] and 'id' in event['pathParameters']:
+
+            table = dynamodb.Table("Desconto")
+            response = table.delete_item(Key={'CodigoDesconto': event['pathParameters']['id']},
+                                         ReturnValues='ALL_OLD')
+            
+            if 'Attributes' in response and response['Attributes']:
+                # Altera encoder senao da erro para campos do tipo UUID, Decimal, Datetime, pois todos tem que virar string
+                json.JSONEncoder.default = JSONEncoder_newdefault
+                body = json.dumps(response)
+            else:
+                statusCode = 404
+                body = 'Nenhum registro encontrado'                 
         
     elif rota == "PATCH /descontos/{id}":
         
-        body = 'Teste PATCH por id' 
+        if 'pathParameters' in event and event['pathParameters'] and 'id' in event['pathParameters'] and 'body' in event:
+
+            #Transforma objeto em Json Sting
+            jsonAjustado = json.dumps(event['body'])
+            
+            #Transforma Json String em Objeto Python com scapes
+            jsonPatch = json.loads(jsonAjustado)
+            
+            #Transforma objeto com scapes em objeto Python correto 
+            jsonPatch = json.loads(jsonPatch)
+            
+            table = dynamodb.Table("Desconto")
+            response = table.update_item(Key={'CodigoDesconto': event['pathParameters']['id']},
+                                        UpdateExpression="set DataInicioDesconto=:datainicio, DataFimDesconto=:datafim, PontuacaoDoCliente=:pontuacao, PercentualDesconto=:desconto",
+                                        ExpressionAttributeValues={
+                                        ':datainicio':jsonPatch['data_inicio_desconto'],
+                                        ':datafim': jsonPatch['data_fim_desconto'],
+                                        ':pontuacao': jsonPatch['pontuacao_do_cliente'],
+                                        ':desconto': jsonPatch['percentual_desconto']},
+                                        ReturnValues="ALL_NEW")
+
+            # Altera encoder senao da erro para campos do tipo UUID, Decimal, Datetime, pois todos tem que virar string
+            json.JSONEncoder.default = JSONEncoder_newdefault
+            body = json.dumps(response)
+         
+
+        else:
+            statusCode = 400
+            body = 'Está faltando o path parameter {id} e/ou o body'
         
     else:
         statusCode = 500

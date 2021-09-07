@@ -136,7 +136,7 @@ def lambda_handler(event, context):
                 body = json.dumps(response)
             else:
                 statusCode = 404
-                body = 'Nenhum registro encontrado'                
+                body = 'Nenhum registro encontrado'                 
         
     elif rota == "PATCH /descontos/{id}":
         
@@ -159,15 +159,12 @@ def lambda_handler(event, context):
                                         ':datafim': jsonPatch['data_fim_desconto'],
                                         ':pontuacao': jsonPatch['pontuacao_do_cliente'],
                                         ':desconto': jsonPatch['percentual_desconto']},
-                                        ReturnValues="UPDATED_NEW")
+                                        ReturnValues="ALL_NEW")
 
-            if 'Attributes' in response and response['Attributes']:
-                # Altera encoder senao da erro para campos do tipo UUID, Decimal, Datetime, pois todos tem que virar string
-                json.JSONEncoder.default = JSONEncoder_newdefault
-                body = json.dumps(response)
-            else:
-                statusCode = 404
-                body = 'Nenhum registro encontrado'                
+            # Altera encoder senao da erro para campos do tipo UUID, Decimal, Datetime, pois todos tem que virar string
+            json.JSONEncoder.default = JSONEncoder_newdefault
+            body = json.dumps(response)
+         
 
         else:
             statusCode = 400

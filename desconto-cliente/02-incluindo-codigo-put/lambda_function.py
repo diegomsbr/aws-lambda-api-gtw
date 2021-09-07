@@ -1,9 +1,7 @@
-
 from pprint import pprint
 
 import boto3
 from boto3.dynamodb.conditions import Key
-from decimal import Decimal
 
 import json
 import logging

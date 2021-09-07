@@ -29,15 +29,17 @@ def lambda_handler(event, context):
     # Caso a função Lambda tenha sifo invocada pelo WarmUP
     # ========================================================
     if 'source' in event and event['source'] == 'warmup':
-        if awsuuid:
-            awsuuid = context['aws_request_id ']
+        if not awsuuid:
+            awsuuid = context.aws_request_id
             
         statusCode = 200
-        body = 'Warmup - aws_request_id ' + awsuuid
+        body = 'Warmup - aws_request_id ' + str(awsuuid)
+        print(body)
+        
         return {
             'statusCode': statusCode,
             'body': body
-        }  
+        } 
     # ========================================================
     # Chamada via API Gateway com proxy para Lambda
     # ========================================================
